@@ -50,7 +50,7 @@ public class PooledSphinxDataSourceTest {
      *
      * @throws Exception
      */
-    @Test(groups = "integration")
+    @Test
     public void testGetClient() throws Exception {
         PooledSphinxDataSource dataSource = new PooledSphinxDataSource();
 
@@ -123,5 +123,27 @@ public class PooledSphinxDataSourceTest {
 
         // verify that the validate method was called on the factory
         verify(factory, times(1)).validateObject(any(PooledObject.class));
+    }
+
+    /**
+     * Test what happens when the pool continuously fails to produce a valid instance of the sphinx client.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testClientFailValidation() throws Exception {
+        PooledSphinxClientFactory factory = spy(new PooledSphinxClientFactory());
+        PooledSphinxDataSource dataSource = new PooledSphinxDataSource(factory);
+        dataSource.setTestOnBorrow(true);
+
+        doReturn(false).when(factory).validateObject(any(PooledObject.class));
+
+        // try and get from pool, object should be invalid.
+        // this really only happens if after several tries, all attempts are invalid
+        try {
+            dataSource.getSphinxClient();
+        } catch (Exception e) {
+            assertEquals("Unable to validate object", e.getCause().getMessage());
+        }
     }
 }
