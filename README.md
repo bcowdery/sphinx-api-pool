@@ -11,7 +11,7 @@ clients must be returned to the pool by calling `Close()` when you are finished 
 
 ```java
 PooledSphinxDataSource dataSource = new PooledSphinxDataSource();
-dataSource.setHost("190.10.14.168");
+dataSource.setHost("localhost");
 dataSource.setPort(9312);
 dataSource.setTestOnBorrow(true);
 dataSource.setTestOnReturn(true);
