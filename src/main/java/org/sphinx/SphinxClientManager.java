@@ -26,6 +26,10 @@ public class SphinxClientManager {
     private PooledSphinxDataSource dataSource;
 
 
+    public SphinxClientManager() {
+        this.dataSource = getDataSource("sphinx-api-pool.properties");
+    }
+
     public SphinxClientManager(String configLocation) {
         this.dataSource = getDataSource(configLocation);
     }
