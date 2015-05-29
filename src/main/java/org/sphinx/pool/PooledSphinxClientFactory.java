@@ -98,7 +98,13 @@ public class PooledSphinxClientFactory extends BasePooledObjectFactory<SphinxCli
         // closed by some other mechanism than this pool factory. Don't trust rogue clients that have
         // been manipulated by outside forces!!
 
-        if (!p.getObject().Close()) {
+        SphinxClient sphinxClient = p.getObject();
+
+        if (!sphinxClient.Close()) {
+            if (!StringUtils.isNullOrEmpty(sphinxClient.GetLastError())) {
+                throw new PooledObjectFactoryException(sphinxClient.GetLastError());
+            }
+
             throw new InvalidObjectException("Could not close client, object is invalid and cannot be passivated.");
         }
     }

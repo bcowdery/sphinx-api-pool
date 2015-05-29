@@ -97,7 +97,13 @@ public class PooledSphinxDataSourceTest {
         dataSource.setTestOnBorrow(true);
         dataSource.setTestOnReturn(false);
 
-        ISphinxClient client = dataSource.getSphinxClient();
+        try {
+            ISphinxClient client = dataSource.getSphinxClient();
+            fail("Connection to non-existent sphinx server should have failed");
+
+        } catch (RuntimeException e) {
+            assertEquals("Unable to retrieve sphinx client from the pool", e.getMessage());
+        }
 
         // verify that the validate method was called on the factory
         verify(factory, times(1)).validateObject(any(PooledObject.class));
@@ -116,6 +122,8 @@ public class PooledSphinxDataSourceTest {
         dataSource.setTestOnReturn(true);
 
         ISphinxClient client = dataSource.getSphinxClient();
+
+        // validate that we can always close, the pool will handle validation errors
         client.Close();
 
         // verify that the validate method was called on the factory

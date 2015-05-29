@@ -1,7 +1,8 @@
 package org.sphinx.pool;
 
 /**
- * PooledObjectFactoryException
+ * Exceptions thrown by the pooled object factory. Can be used to propagate errors up
+ * to through pool for application handling.
  *
  * @author Brian Cowdery
  * @since 29-05-2015

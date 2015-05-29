@@ -96,6 +96,26 @@ public class PooledSphinxDataSource {
     }
 
     /**
+     * Returns the maximum amount of time (in milliseconds) the borrowObject() method should block before throwing an
+     * exception when the pool is exhausted. When less than 0, the getSphinxClient() method may block indefinitely.
+     *
+     * @return the maximum number of milliseconds getSphinxClient() will block.
+     */
+    public long getMaxWaitMillis() {
+        return pool.getMaxWaitMillis();
+    }
+
+    /**
+     * Sets the maximum amount of time (in milliseconds) the getSphinxClient() method should block before throwing an
+     * exception when the pool is exhausted. When less than 0, the getSphinxClient() method may block indefinitely.
+     *
+     * @param maxWaitMillis the maximum number of milliseconds borrowObject() will block or negative for indefinitely.
+     */
+    public void setMaxWaitMillis(long maxWaitMillis) {
+        pool.setMaxWaitMillis(maxWaitMillis);
+    }
+
+    /**
      * Returns the cap on the number of "idle" instances in the pool.
      *
      * @return number of idle instances

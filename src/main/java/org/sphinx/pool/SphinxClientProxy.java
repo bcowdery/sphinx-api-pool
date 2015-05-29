@@ -238,12 +238,14 @@ public class SphinxClientProxy implements ISphinxClient {
      * @return always returns true.
      */
     public boolean Close() {
+
+        // the sphinx socket connection is closed on return by the
+        // PooledSphinxClientFactory#passivateObject() method
+
         try {
-            // the sphinx socket connection is closed on return by the
-            // PooledSphinxClientFactory#passivateObject() method
             pool.returnObject(delegate);
         } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while returning sphinx client to the pool", e);
+            /* swallow return errors */
         }
 
         delegate = null;
