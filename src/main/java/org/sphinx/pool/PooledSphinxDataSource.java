@@ -4,6 +4,7 @@ import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.sphinx.api.ISphinxClient;
 import org.sphinx.api.SphinxClient;
+import org.sphinx.config.BasicPooledDataSourceConfig;
 
 /**
  * Pooled data source for sphinx clients.
@@ -37,13 +38,34 @@ public class PooledSphinxDataSource {
         this(new PooledSphinxClientFactory(host, port));
     }
 
+    public PooledSphinxDataSource(BasicPooledDataSourceConfig config) {
+        this(new PooledSphinxClientFactory(config.getHost(), config.getPort()), config);
+    }
+
     public PooledSphinxDataSource(BasePooledObjectFactory<SphinxClient> factory) {
         this(new GenericObjectPool<SphinxClient>(factory));
+    }
+
+    public PooledSphinxDataSource(BasePooledObjectFactory<SphinxClient> factory, BasicPooledDataSourceConfig config) {
+        this(new GenericObjectPool<SphinxClient>(factory), config);
     }
 
     public PooledSphinxDataSource(GenericObjectPool<SphinxClient> pool) {
         this.pool = pool;
     }
+
+    public PooledSphinxDataSource(GenericObjectPool<SphinxClient> pool, BasicPooledDataSourceConfig config) {
+        this.pool = pool;
+
+        if (config != null) {
+            setTestOnBorrow(config.getTestOnBorrow());
+            setTestOnReturn(config.getTestOnReturn());
+            setMinIdle(config.getMinIdle());
+            setMaxIdle(config.getMaxIdle());
+            setMaxTotal(config.getMaxTotal());
+        }
+    }
+
 
     /**
      * Returns whether objects borrowed from the pool will be validated before being returned from the getSphinxClient()

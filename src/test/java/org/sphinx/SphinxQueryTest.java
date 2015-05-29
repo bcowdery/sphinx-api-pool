@@ -13,7 +13,7 @@ import static org.testng.Assert.*;
  * @author Brian Cowdery
  * @since 29-05-2015
  */
-@Test(enabled = false)
+@Test(enabled = false, description = "Live integration test, not part of automated test suite.")
 public class SphinxQueryTest {
 
     @Test

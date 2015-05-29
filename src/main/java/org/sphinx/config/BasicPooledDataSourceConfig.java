@@ -8,7 +8,6 @@ package org.sphinx.config;
  */
 public class BasicPooledDataSourceConfig {
 
-    private final ConfigurationKey configurationKey;
     private final String host;
     private final int port;
     private final boolean testOnBorrow;
@@ -18,8 +17,11 @@ public class BasicPooledDataSourceConfig {
     private final int maxTotal;
 
 
+    public BasicPooledDataSourceConfig(String host, int port) {
+        this(host, port, false, false, 0, 8, 8);
+    }
+
     public BasicPooledDataSourceConfig(String host, int port, boolean testOnBorrow, boolean testOnReturn, int minIdle, int maxIdle, int maxTotal) {
-        this.configurationKey = new ConfigurationKey(host, port);
         this.host = host;
         this.port = port;
         this.testOnBorrow = testOnBorrow;
@@ -29,10 +31,6 @@ public class BasicPooledDataSourceConfig {
         this.maxTotal = maxTotal;
     }
 
-
-    public ConfigurationKey getConfigurationKey() {
-        return configurationKey;
-    }
 
     public String getHost() {
         return host;

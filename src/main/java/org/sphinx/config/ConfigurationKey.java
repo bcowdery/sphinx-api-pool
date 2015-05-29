@@ -14,10 +14,18 @@ import java.io.Serializable;
  */
 public class ConfigurationKey implements Serializable {
 
-    private String host;
-    private int port;
+    private final String configLocation;
+    private final String host;
+    private final Integer port;
+
+    public ConfigurationKey(String configLocation) {
+        this.configLocation = configLocation;
+        this.host = null;
+        this.port = null;
+    }
 
     public ConfigurationKey(String host, int port) {
+        this.configLocation = null;
         this.host = host;
         this.port = port;
     }
@@ -29,14 +37,16 @@ public class ConfigurationKey implements Serializable {
 
         ConfigurationKey that = (ConfigurationKey) o;
 
-        if (port != that.port) return false;
-        return !(host != null ? !host.equals(that.host) : that.host != null);
+        if (configLocation != null ? !configLocation.equals(that.configLocation) : that.configLocation != null) return false;
+        if (host != null ? !host.equals(that.host) : that.host != null) return false;
+        return !(port != null ? !port.equals(that.port) : that.port != null);
     }
 
     @Override
     public int hashCode() {
-        int result = host != null ? host.hashCode() : 0;
-        result = 31 * result + port;
+        int result = configLocation != null ? configLocation.hashCode() : 0;
+        result = 31 * result + (host != null ? host.hashCode() : 0);
+        result = 31 * result + (port != null ? port.hashCode() : 0);
         return result;
     }
 }

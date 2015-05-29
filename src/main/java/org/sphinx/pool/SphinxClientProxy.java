@@ -244,8 +244,10 @@ public class SphinxClientProxy implements ISphinxClient {
 
         try {
             pool.returnObject(delegate);
+
         } catch (Exception e) {
-            /* swallow return errors */
+            delegate = null;
+            return false;
         }
 
         delegate = null;

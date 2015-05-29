@@ -4,8 +4,8 @@ sphinx.dataSource.host=localhost
 sphinx.dataSource.port=9312
 
 # pooling
-sphinx.dataSource.testOnBorrow=true
-sphinx.dataSource.testOnReturn=true
+sphinx.dataSource.testOnBorrow=false
+sphinx.dataSource.testOnReturn=false
 sphinx.dataSource.minIdle=0
 sphinx.dataSource.maxIdle=8
 sphinx.dataSource.maxTotal=8

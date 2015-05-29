@@ -1,6 +1,8 @@
 package org.sphinx;
 
+import org.sphinx.config.BasicPooledDataSourceConfig;
 import org.sphinx.config.ConfigurationKey;
+import org.sphinx.config.ConfigurationReader;
 import org.sphinx.pool.PooledSphinxDataSource;
 import org.sphinx.api.ISphinxClient;
 
@@ -24,8 +26,8 @@ public class SphinxClientManager {
     private PooledSphinxDataSource dataSource;
 
 
-    public SphinxClientManager(ConfigurationKey key) {
-        this.dataSource = getDataSource(key);
+    public SphinxClientManager(String configLocation) {
+        this.dataSource = getDataSource(configLocation);
     }
 
     public SphinxClientManager(String host, int port) {
@@ -75,6 +77,28 @@ public class SphinxClientManager {
     }
 
     /**
+     * Lookup a data source by configuration. If the data source does not exist the
+     * configuration will be read from the given location and a new instance created.
+     *
+     * @param configLocation location of the data source config property file
+     * @return data source
+     */
+    public static PooledSphinxDataSource getDataSource(String configLocation) {
+        ConfigurationKey key = new ConfigurationKey(configLocation);
+        PooledSphinxDataSource dataSource = dataSourceStore.get(key);
+
+        if (dataSource == null) {
+            ConfigurationReader reader = new ConfigurationReader(configLocation);
+            BasicPooledDataSourceConfig config = reader.getConfigObject();
+
+            dataSource = new PooledSphinxDataSource(config);
+            dataSourceStore.put(key, dataSource);
+        }
+
+        return dataSource;
+    }
+
+    /**
      * Lookup a data source by configuration. Returns null if no data source can
      * be found for the given key.
      *
@@ -86,7 +110,7 @@ public class SphinxClientManager {
     }
 
     /**
-     * Register a data source with the client manager. Future
+     * Register a data source with the client manager.
      *
      * @param dataSource data source
      * @return configuration key for future lookup

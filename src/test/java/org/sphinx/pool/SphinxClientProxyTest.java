@@ -67,19 +67,25 @@ public class SphinxClientProxyTest {
      */
     @Test
     public void testClose() throws Exception {
-        proxy.Close();
+        boolean success = proxy.Close();
+
         verify(pool).returnObject(client);
+        assertTrue(success);
     }
 
     /**
-     * Tests that Close() will throw a runtime exception if there is an issue returning
+     * Tests that Close() will swallow any runtime exceptions if there is an issue returning
      * the underlying SphinxClient back to the pool.
      *
      * @throws Exception
      */
-    @Test(expectedExceptions = RuntimeException.class)
+    @Test
     public void testCloseException() throws Exception {
         doThrow(new SocketException("Could not close socket")).when(pool).returnObject(client);
-        proxy.Close(); // rethrow as RuntimeException
+
+        boolean success = proxy.Close();
+
+        verify(pool).returnObject(client);
+        assertFalse(success);
     }
 }
