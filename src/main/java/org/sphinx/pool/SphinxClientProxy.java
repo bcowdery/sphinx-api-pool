@@ -35,7 +35,13 @@ public class SphinxClientProxy implements ISphinxClient {
         this.pool = pool;
     }
 
-
+    /**
+     * Returns the underlying sphinx client instance wrapped by this proxy instance. This method will
+     * throw an exception if the client has been closed and returned to the pool.
+     *
+     * @return wrapped client instance
+     * @throws IllegalStateException if client is closed
+     */
     public ISphinxClient getDelegate() {
         if (delegate == null) throw new IllegalStateException("The underlying sphinx client has been closed.");
         return delegate;
@@ -225,11 +231,19 @@ public class SphinxClientProxy implements ISphinxClient {
         return getDelegate().FlushAttributes();
     }
 
+    /**
+     * Return the client to the pool and close the socket connection. Once the client has been
+     * closed you must retrieve a new instance from the pool.
+     *
+     * @return always returns true.
+     */
     public boolean Close() {
         try {
+            // the sphinx socket connection is closed on return by the
+            // PooledSphinxClientFactory#passivateObject() method
             pool.returnObject(delegate);
         } catch (Exception e) {
-            throw new RuntimeException("Exception occurred while returning sphinx client to pool", e);
+            throw new RuntimeException("Exception occurred while returning sphinx client to the pool", e);
         }
 
         delegate = null;

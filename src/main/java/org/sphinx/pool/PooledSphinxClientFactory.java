@@ -7,7 +7,7 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.sphinx.api.SphinxClient;
 
 /**
- * Object factory for creating pooled {@linked SphinxClient} instances.
+ * Object factory for creating pooled {@link SphinxClient} instances.
  *
  * @author Brian Cowdery
  * @since 28-05-2015
@@ -27,27 +27,55 @@ public class PooledSphinxClientFactory extends BasePooledObjectFactory<SphinxCli
     }
 
 
+    /**
+     * Returns the sphinx host URL.
+     * @return sphinx host
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * Sets the sphinx host URL.
+     * @param host sphinx host
+     */
     public void setHost(String host) {
         this.host = host;
     }
 
+    /**
+     * Returns the sphinx port.
+     * @return sphinx port
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     * Sets the sphinx port.
+     * @param port sphinx port
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     * Creates a new instance of {@link SphinxClient} with the configured host and port.
+     *
+     * @return new instance of the sphinx client
+     * @throws Exception
+     */
     @Override
     public SphinxClient create() throws Exception {
         return StringUtils.isNullOrEmpty(host) ? new SphinxClient() : new SphinxClient(host, port);
     }
 
+    /**
+     * Wraps a given instance of the {@link SphinxClient} as a pooled object.
+     *
+     * @param sphinxClient object to wrap
+     * @return pooled object
+     */
     @Override
     public PooledObject<SphinxClient> wrap(SphinxClient sphinxClient) {
         return new DefaultPooledObject<SphinxClient>(sphinxClient);
@@ -62,7 +90,9 @@ public class PooledSphinxClientFactory extends BasePooledObjectFactory<SphinxCli
      */
     @Override
     public void passivateObject(PooledObject<SphinxClient> p) throws Exception {
-        p.getObject().Close();
+        if (!p.getObject().Close()) {
+            p.invalidate(); // error occurred while closing socket, invalidate the object
+        }
     }
 
     /**
@@ -90,10 +120,7 @@ public class PooledSphinxClientFactory extends BasePooledObjectFactory<SphinxCli
     }
 
     /**
-     * Validate that the object is safe to return to the pool and has not incurred any connection errors
-     * when activating. This method will also be invoked on return if the pool setting
-     * {@link PooledSphinxDataSource#getTestOnReturn()} is set to true, forcing eviction from the pool
-     * if an issue was encountered during use.
+     * Tests the client instance for connection errors and ensures that it is safe to be returned by the pool.
      *
      * @param p pooled object
      * @return true if valid, false if a connection error would prevent this object from being used again.

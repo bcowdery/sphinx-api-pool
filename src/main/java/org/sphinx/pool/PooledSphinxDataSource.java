@@ -253,7 +253,7 @@ public class PooledSphinxDataSource {
         try {
             return new SphinxClientProxy(pool.borrowObject(), pool);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to retrieve sphinx client from pool", e);
+            throw new RuntimeException("Unable to retrieve sphinx client from the pool", e);
         }
     }
 }
