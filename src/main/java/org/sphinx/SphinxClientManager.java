@@ -124,4 +124,14 @@ public class SphinxClientManager {
         dataSourceStore.put(key, dataSource);
         return key;
     }
+
+    /**
+     * Register a data source with the client manager.
+     *
+     * @param key configuration key
+     * @param dataSource data source
+     */
+    public static void registerDataSource(ConfigurationKey key, PooledSphinxDataSource dataSource) {
+        dataSourceStore.put(key, dataSource);
+    }
 }

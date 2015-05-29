@@ -48,4 +48,56 @@ public class SphinxClientManagerTest {
         PooledSphinxDataSource actual = SphinxClientManager.getDataSource("localhost", 9312);
         assertSame(actual, dataSource, "Should return the same instance from storage");
     }
+
+    @Test
+    public void testStoreAndLookupByConfigLocation() {
+        PooledSphinxDataSource dataSource = new PooledSphinxDataSource();
+        dataSource.setHost("localhost");
+        dataSource.setPort(9312);
+
+        ConfigurationKey key = new ConfigurationKey("my-configuration.properties");
+
+        SphinxClientManager.registerDataSource(key, dataSource);
+
+        // verify that we can lookup the registered datasource by hostname & port
+        PooledSphinxDataSource actual = SphinxClientManager.getDataSource(key);
+        assertSame(actual, dataSource, "Should return the same instance from storage");
+    }
+
+    @Test
+    public void testBuildAndLookupByConfigLocation() {
+        PooledSphinxDataSource dataSource = SphinxClientManager.getDataSource("configuration-reader-test.properties");
+
+        // verify that the data source was constructed with the values from the properties file
+        assertEquals("test.sphinx.org", dataSource.getHost());
+        assertEquals(9312, dataSource.getPort());
+        assertEquals(true, dataSource.getTestOnBorrow());
+        assertEquals(true, dataSource.getTestOnReturn());
+        assertEquals(0, dataSource.getMinIdle());
+        assertEquals(10, dataSource.getMaxIdle());
+        assertEquals(10, dataSource.getMaxTotal());
+
+        // verify that we can lookup the registered datasource by config location
+        PooledSphinxDataSource actual = SphinxClientManager.getDataSource("configuration-reader-test.properties");
+        assertSame(actual, dataSource, "Should return the same instance from storage");
+    }
+
+    @Test
+    public void testConstructorWithConfigLocation() {
+        PooledSphinxDataSource dataSource = new SphinxClientManager("configuration-reader-test.properties").getDataSource();
+        PooledSphinxDataSource dataSource2 = new SphinxClientManager("configuration-reader-test.properties").getDataSource();
+
+        assertSame(dataSource, dataSource2);
+    }
+
+    @Test
+    public void testConstructorWithHostAndPort() {
+        final String host = "localhost";
+        final int port = 9312;
+
+        PooledSphinxDataSource dataSource = new SphinxClientManager(host, port).getDataSource();
+        PooledSphinxDataSource dataSource2 = new SphinxClientManager(host, port).getDataSource();
+
+        assertSame(dataSource, dataSource2);
+    }
 }
