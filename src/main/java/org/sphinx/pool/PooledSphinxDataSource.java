@@ -147,7 +147,7 @@ public class PooledSphinxDataSource {
     }
 
     /**
-     * Set  the number of "idle" instances in the pool. If maxIdle is set too low on heavily loaded systems it is
+     * Set the number of "idle" instances in the pool. If maxIdle is set too low on heavily loaded systems it is
      * possible you will see objects being destroyed and almost immediately new objects being created. This is a
      * result of the active threads momentarily returning objects faster than they are requesting them them, causing
      * the number of idle objects to rise above maxIdle. The best value for maxIdle for heavily loaded system will
