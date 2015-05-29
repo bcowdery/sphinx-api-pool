@@ -15,7 +15,7 @@ import static org.testng.Assert.*;
  */
 @Test(enabled = false, description = "Live integration test, not part of automated test suite.")
 public class SphinxQueryTest {
-
+/*
     @Test
     public void testSphinxQuery() throws Exception {
         PooledSphinxDataSource dataSource = new PooledSphinxDataSource();
@@ -33,4 +33,5 @@ public class SphinxQueryTest {
         SphinxResult result = client.Query("SELECT name, postdate FROM releases WHERE MATCH('Futurama')");
         assertNotNull(result);
     }
+*/
 }
