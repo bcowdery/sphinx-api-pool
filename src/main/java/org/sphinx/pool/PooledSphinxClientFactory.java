@@ -6,6 +6,8 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.sphinx.api.SphinxClient;
 
+import java.io.InvalidObjectException;
+
 /**
  * Object factory for creating pooled {@link SphinxClient} instances.
  *
@@ -86,12 +88,18 @@ public class PooledSphinxClientFactory extends BasePooledObjectFactory<SphinxCli
      * can be safely returned to the pool.
      *
      * @param p pooled object
-     * @throws Exception
+     * @throws InvalidObjectException if the socket connection could not be closed
      */
     @Override
-    public void passivateObject(PooledObject<SphinxClient> p) throws Exception {
+    public void passivateObject(PooledObject<SphinxClient> p) throws InvalidObjectException {
+
+        // The current implementation of SphinxClient will only return false on Close() when the
+        // socket is already closed. This isn't a major issue except that it means the socket was
+        // closed by some other mechanism than this pool factory. Don't trust rogue clients that have
+        // been manipulated by outside forces!!
+
         if (!p.getObject().Close()) {
-            p.invalidate(); // error occurred while closing socket, invalidate the object
+            throw new InvalidObjectException("Could not close client, object is invalid and cannot be passivated.");
         }
     }
 
