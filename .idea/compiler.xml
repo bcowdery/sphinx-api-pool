@@ -22,10 +22,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="sphinx-api-pool" />
         <module name="sphinx-wrapper" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="sphinx-api-pool" target="1.5" />
       <module name="sphinx-wrapper" target="1.5" />
     </bytecodeTargetLevel>
   </component>

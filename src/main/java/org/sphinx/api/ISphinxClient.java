@@ -3,7 +3,7 @@ package org.sphinx.api;
 import java.util.Map;
 
 /**
- * ISphinxClient
+ * Sphinx client interface, extracted from the original SphinxClient provided by sphinx.org
  *
  * @author Brian Cowdery
  * @since 28-05-2015

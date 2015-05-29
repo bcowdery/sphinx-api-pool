@@ -1,5 +1,6 @@
 package org.sphinx.pool;
 
+import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.sphinx.api.ISphinxClient;
 import org.sphinx.api.SphinxClient;
@@ -29,11 +30,15 @@ public class PooledSphinxDataSource {
 
 
     public PooledSphinxDataSource() {
-        this(new GenericObjectPool<SphinxClient>(new PooledSphinxClientFactory()));
+        this(new PooledSphinxClientFactory());
     }
 
     public PooledSphinxDataSource(String host, int port) {
-        this(new GenericObjectPool<SphinxClient>(new PooledSphinxClientFactory(host, port)));
+        this(new PooledSphinxClientFactory(host, port));
+    }
+
+    public PooledSphinxDataSource(BasePooledObjectFactory<SphinxClient> factory) {
+        this(new GenericObjectPool<SphinxClient>(factory));
     }
 
     public PooledSphinxDataSource(GenericObjectPool<SphinxClient> pool) {
@@ -43,8 +48,9 @@ public class PooledSphinxDataSource {
 
 
     private void setPoolDefaults() {
-        setTestOnBorrow(true);
-        setTestOnReturn(true);
+        pool.setTestOnBorrow(true);
+        pool.setTestOnReturn(true);
+        pool.setTestOnCreate(false); // SphinxClient constructor has no logic, no point in testing on create
     }
 
     public boolean getTestOnBorrow() {
@@ -52,7 +58,7 @@ public class PooledSphinxDataSource {
     }
 
     public void setTestOnBorrow(boolean testOnBorrow) {
-        pool.setTestOnBorrow(true);
+        pool.setTestOnBorrow(testOnBorrow);
     }
 
     public boolean getTestOnReturn() {
@@ -61,14 +67,6 @@ public class PooledSphinxDataSource {
 
     public void setTestOnReturn(boolean testOnReturn) {
         pool.setTestOnReturn(testOnReturn);
-    }
-
-    public boolean getTestOnCreate() {
-        return pool.getTestOnCreate();
-    }
-
-    public void setTestOnCreate(boolean testOnCreate) {
-        pool.setTestOnCreate(testOnCreate);
     }
 
     public int getMaxIdle() {
@@ -111,15 +109,39 @@ public class PooledSphinxDataSource {
         getFactory().setPort(port);
     }
 
-    private PooledSphinxClientFactory getFactory() {
+    /**
+     * Returns the object factory backing the pool.
+     *
+     * @return pooled object factory
+     */
+    public PooledSphinxClientFactory getFactory() {
         return (PooledSphinxClientFactory) pool.getFactory();
     }
 
     /**
-     * Returns a managed instance of {@link ISphinxClient} from the pool. The object must
-     * be closed by the caller to return it to the pool.
+     * Returns the number of clients currently borrowed from the pool. This count is
+     * roughly the number of active connections/sockets open to the sphinx server.
      *
-     * @see ISphinxClient#Close()
+     * @return number of active clients checked out of the pool.
+     */
+    public int getNumActive() {
+        return pool.getNumActive();
+    }
+
+    /**
+     * Returns the number of idle clients in the pool ready for use.
+     *
+     * @return number of idle clients
+     */
+    public int getNumIdle() {
+        return pool.getNumIdle();
+    }
+
+    /**
+     * Fetches a managed instance of {@link ISphinxClient} from the pool. The object must
+     * be closed by the caller to return it to the pool when finished.
+     *
+     * @see SphinxClientProxy#Close()
      *
      * @return sphinx client
      */

@@ -37,6 +37,7 @@ public class SphinxClientProxy implements ISphinxClient {
 
 
     public ISphinxClient getDelegate() {
+        if (delegate == null) throw new IllegalStateException("The underlying sphinx client has been closed.");
         return delegate;
     }
 
