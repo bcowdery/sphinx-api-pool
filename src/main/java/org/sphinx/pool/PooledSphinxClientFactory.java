@@ -136,6 +136,13 @@ public class PooledSphinxClientFactory extends BasePooledObjectFactory<SphinxCli
     @Override
     public boolean validateObject(PooledObject<SphinxClient> p) {
         SphinxClient sphinxClient = p.getObject();
-        return sphinxClient.IsConnectError() || !StringUtils.isNullOrEmpty(sphinxClient.GetLastError());
+
+        boolean valid = !sphinxClient.IsConnectError();
+
+        if (!valid && !StringUtils.isNullOrEmpty(sphinxClient.GetLastError())) {
+            throw new PooledObjectFactoryException(sphinxClient.GetLastError());
+        }
+
+        return valid;
     }
 }

@@ -2,7 +2,6 @@ package org.sphinx;
 
 import org.sphinx.config.ConfigurationKey;
 import org.sphinx.pool.PooledSphinxDataSource;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;

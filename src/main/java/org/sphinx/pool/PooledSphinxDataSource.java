@@ -43,14 +43,6 @@ public class PooledSphinxDataSource {
 
     public PooledSphinxDataSource(GenericObjectPool<SphinxClient> pool) {
         this.pool = pool;
-        this.setPoolDefaults();
-    }
-
-
-    private void setPoolDefaults() {
-        pool.setTestOnBorrow(true);
-        pool.setTestOnReturn(true);
-        pool.setTestOnCreate(false); // SphinxClient constructor has no logic, no point in testing on create
     }
 
     /**
