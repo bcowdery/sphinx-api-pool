@@ -55,7 +55,7 @@ over connections to the sphinx server. Ideally, the `maxTotal` value of your all
 `max_children` config value of your sphinx server.
 
 Setting | Default | Description
-------------- | -------------
+------------- | --------- | -------------
 host          | localhost | The sphinx server IP address or host name
 port          | 9312      | The sphinx server connection port
 testOnBorrow  | false     | Test the sphinx client for connection errors when borrowing from the pool
@@ -63,6 +63,10 @@ testOnReturn  | false     | Test the sphinx client for connection errors when re
 minIdle       | 0         | The target for the minimum number of idle instances to maintain in the pool.
 maxIdle       | 8         | The maximum cap of idle instances in the pool.
 maxTotal      | 8         | Maximum number of instances, both idle & in use, that can be allocated by the pool.
+
+
+<br/>
+<br/>
 
 
 ### Configuration values
