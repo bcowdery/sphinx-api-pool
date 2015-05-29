@@ -25,12 +25,8 @@
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${project.basedir}/src</directory>
+            <directory>${project.build.directory}/resources</directory>
             <outputDirectory>/</outputDirectory>
-            <includes>
-                <include>main/resources/*.properties</include>
-                <include>main/resources/*.properties.sample</include>
-            </includes>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}/site</directory>
