@@ -4,6 +4,8 @@ import org.sphinx.util.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -22,8 +24,8 @@ public class ConfigurationReader {
         DEFAULTS = new Properties();
         DEFAULTS.setProperty("sphinx.dataSource.host", "localhost");
         DEFAULTS.setProperty("sphinx.dataSource.port", "9312");
-        DEFAULTS.setProperty("sphinx.dataSource.testOnBorrow", "true");
-        DEFAULTS.setProperty("sphinx.dataSource.testOnReturn", "true");
+        DEFAULTS.setProperty("sphinx.dataSource.testOnBorrow", "false");
+        DEFAULTS.setProperty("sphinx.dataSource.testOnReturn", "false");
         DEFAULTS.setProperty("sphinx.dataSource.minIdle", "0");
         DEFAULTS.setProperty("sphinx.dataSource.maxIdle", "8");
         DEFAULTS.setProperty("sphinx.dataSource.maxTotal", "8");
@@ -33,6 +35,10 @@ public class ConfigurationReader {
     private String path;
     private Properties properties;
 
+
+    public ConfigurationReader() {
+        load();
+    }
 
     public ConfigurationReader(String path) {
         this.path = path;
@@ -131,10 +137,23 @@ public class ConfigurationReader {
     public void load() {
         properties = new Properties(DEFAULTS);
 
-        try {
-            properties.load(new FileInputStream(path));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not read properties file from path " + path, e);
+        if (!StringUtils.isNullOrEmpty(path)) {
+            InputStream in = null;
+
+            try {
+                in = this.getClass().getResourceAsStream ("/" + path);
+                properties.load(in);
+
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Could not read properties file from path " + path, e);
+
+            } finally {
+                if (null != in) {
+                    try {
+                        in.close();
+                    } catch (IOException ex) {}
+                }
+            }
         }
     }
 }

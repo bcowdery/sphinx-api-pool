@@ -42,11 +42,11 @@ public class BasicPooledDataSourceConfig {
         return port;
     }
 
-    public boolean isTestOnBorrow() {
+    public boolean getTestOnBorrow() {
         return testOnBorrow;
     }
 
-    public boolean isTestOnReturn() {
+    public boolean getTestOnReturn() {
         return testOnReturn;
     }
 
