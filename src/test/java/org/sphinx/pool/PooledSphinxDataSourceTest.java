@@ -41,8 +41,8 @@ public class PooledSphinxDataSourceTest {
         dataSource.setPort(port);
 
         PooledSphinxClientFactory factory = dataSource.getFactory();
-        assertEquals(host, factory.getHost());
-        assertEquals(port, factory.getPort());
+        assertEquals(factory.getHost(), host);
+        assertEquals(factory.getPort(), port);
     }
 
     /**
@@ -56,15 +56,12 @@ public class PooledSphinxDataSourceTest {
 
         // get client from pool
         ISphinxClient client = dataSource.getSphinxClient();
-
         assertNotNull(client);
-        assertEquals(1, dataSource.getNumActive());
-        assertEquals(0, dataSource.getNumIdle());
+        assertEquals(dataSource.getNumActive(), 1);
 
         // return to pool
         client.Close();
-        assertEquals(0, dataSource.getNumActive());
-        assertEquals(1, dataSource.getNumIdle());
+        assertEquals(dataSource.getNumActive(), 0);
     }
 
     /**
@@ -143,7 +140,7 @@ public class PooledSphinxDataSourceTest {
         try {
             dataSource.getSphinxClient();
         } catch (Exception e) {
-            assertEquals("Unable to validate object", e.getCause().getMessage());
+            assertEquals(e.getCause().getMessage(), "Unable to validate object");
         }
     }
 }
